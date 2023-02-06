@@ -1,12 +1,12 @@
 const express = require('express');
-const { readFile } = require('./utils/utils');
+const talkerRouter = require('./routes/talkerRouter');
+const loginRouter = require('./routes/loginRouter');
 
 const app = express();
 app.use(express.json());
 
 const HTTP_OK_STATUS = 200;
 const HTTP_ERR_STATUS = 500;
-const HTTP_NOT_FOUND = 404;
 const PORT = '3000';
 
 // não remova esse endpoint, e para o avaliador funcionar
@@ -18,24 +18,14 @@ app.listen(PORT, () => {
   console.log('Online on port', PORT);
 });
 
-app.get('/talker', async (_req, resp) => {
-  try {
-    const talkers = await readFile();
-    resp.status(HTTP_OK_STATUS).json(talkers);
-  } catch (err) {
-    resp.status(HTTP_ERR_STATUS).send({ message: err.message });
-  }
+app.use('/talker', talkerRouter);
+app.use('/login', loginRouter);
+
+app.use((error, _req, _res, next) => {
+  console.error(error.stack);
+  next(error);
 });
 
-app.get('/talker/:id', async (req, resp) => {
-  try {
-    const talkers = await readFile();
-    const talker = talkers.find(({ id }) => id === Number(req.params.id));
-    if (!talker) {
-      return resp.status(HTTP_NOT_FOUND).send({ message: 'Pessoa palestrante não encontrada' });
-    }
-    resp.status(HTTP_OK_STATUS).json(talker);
-  } catch (err) {
-    resp.status(HTTP_ERR_STATUS).send({ message: err.message });
-  }
+app.use((error, _req, res, _next) => {
+  res.status(HTTP_ERR_STATUS).json({ message: `Algo deu errado! Mensagem: ${error.message}` });
 });
