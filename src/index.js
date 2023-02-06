@@ -27,5 +27,6 @@ app.use((error, _req, _res, next) => {
 });
 
 app.use((error, _req, res, _next) => {
-  res.status(HTTP_ERR_STATUS).json({ message: `Algo deu errado! Mensagem: ${error.message}` });
+  const { status, message } = error;
+  return res.status(status || HTTP_ERR_STATUS).json({ message });
 });

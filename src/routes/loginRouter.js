@@ -1,15 +1,19 @@
 const express = require('express');
-const validateLogin = require('../middlewares/validateLogin');
+const emailValidation = require('../middlewares/emailValidation');
+const passValidation = require('../middlewares/passValidation');
+const tokenGenerator = require('../utils/tokenGenerator');
 
-const loginRouter = express.Router();
+const router = express.Router();
 
 const HTTP_OK_STATUS = 200;
 
-loginRouter.post('/login', validateLogin, (req, resp, next) => {
+router.post('/', emailValidation, passValidation, (_req, resp, next) => {
   try {
-    const token = generateToken();
+    const token = tokenGenerator();
     return resp.status(HTTP_OK_STATUS).json({ token });
   } catch (error) {
       return next(error);
   }
 });
+
+module.exports = router;
