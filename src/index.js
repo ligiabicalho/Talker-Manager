@@ -1,5 +1,5 @@
 const express = require('express');
-const readFile = require('./readFile');
+const { readFile } = require('./readFile');
 
 const app = express();
 app.use(express.json());
@@ -20,7 +20,6 @@ app.listen(PORT, () => {
 app.get('/talker', async (_req, resp) => {
   try {
     const talkers = await readFile();
-    console.log(talkers);
     resp.status(HTTP_OK_STATUS).json(talkers);
   } catch (err) {
     resp.status(HTTP_ERR_STATUS).send({ message: err.message });
