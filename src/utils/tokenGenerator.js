@@ -1,3 +1,4 @@
+// ref: https://nodejs.org/api/crypto.html#cryptorandombytessize-callback
 const crypto = require('crypto');
 
 function tokenGenerator() {
