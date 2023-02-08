@@ -1,11 +1,11 @@
 const { HTTP_BAD_REQUEST } = require('../utils/constStatus');
+const { isRequered } = require('../utils/utils');
 
 function ageValidation(req, _resp, next) {
   const { age } = req.body;
-  console.log('age length', !age);
-  if (!age) {
-    return next({ status: HTTP_BAD_REQUEST, message: 'O campo "age" é obrigatório' });
-  }
+
+  isRequered(age, next, 'age');
+
   if (typeof age === 'string') {
     return next({ status: HTTP_BAD_REQUEST, 
       message: 'O campo "age" deve ser do tipo "number"' });

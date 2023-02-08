@@ -20,10 +20,10 @@ app.listen(PORT, () => {
 app.use('/talker', talkerRouter);
 app.use('/login', loginRouter);
 
-// app.use((error, _req, _res, next) => {
-//   console.error('Error:', error.stack);
-//   next(error);
-// });
+app.use((error, _req, _res, next) => {
+  console.error('Error:', error);
+  next(error);
+});
 
 app.use((error, _req, res, _next) => {
   const { status, message } = error;
