@@ -1,5 +1,5 @@
 const express = require('express');
-const { readTalker, addTalker } = require('../utils/utils');
+const { readTalker, addTalker, getTalkerID } = require('../utils/utils');
 const existingId = require('../middlewares/existingId');
 const tokenValidation = require('../middlewares/tokenValidation');
 const nameValidation = require('../middlewares/nameValidation');
@@ -42,9 +42,9 @@ router.post('/', tokenValidation, nameValidation,
   }
 });
 
-// router.put('/:id', (req, resp, next) => {
-//   const { id } = req.params;
-  
-// });
+router.put('/:id', (req, resp, next) => {
+  const { id } = req.params;
+  getTalkerID(id);
+});
 
 module.exports = router;

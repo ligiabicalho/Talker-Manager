@@ -15,9 +15,13 @@ const readTalker = async () => {
 };
 
 const getTalkerID = async (id) => {
+   try {
   const talkers = await readTalker();
   const talker = talkers.find((t) => t.id === Number(id));
   return talker;
+  } catch (error) {
+    console.error(`Arquivo não pôde ser lido: ${error}`);
+  }
 };
 
 const isRequered = (fieldValue, next, value) => {
