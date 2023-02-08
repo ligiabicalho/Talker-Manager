@@ -14,6 +14,12 @@ const readTalker = async () => {
   }
 };
 
+const getTalkerID = async (id) => {
+  const talkers = await readTalker();
+  const talker = talkers.find((t) => t.id === Number(id));
+  return talker;
+};
+
 const isRequered = (fieldValue, next, value) => {
   if (!fieldValue) {
     return next({
@@ -43,4 +49,4 @@ const addTalker = async (data) => {
   return newTalker;
 };
 
-module.exports = { readTalker, isRequered, writeTalker, addTalker };
+module.exports = { readTalker, isRequered, writeTalker, addTalker, getTalkerID };
