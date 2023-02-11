@@ -1,7 +1,7 @@
 const HTTP_BAD_REQUEST = 400;
 const { isRequered } = require('../utils/utils');
 
-const emailValidation = (req, resp, next) => {
+const emailValidation = (req, _resp, next) => {
   const { email } = req.body;
   const isEmailValid = /^\w+@[a-zA-Z_]+?\.[a-zA-Z]{2,3}$/;
 

@@ -1,5 +1,5 @@
 const express = require('express');
-const { readTalker, addTalker, getTalkerID } = require('../utils/utils');
+const { getAllTalkers, addTalker, getTalkerById, writeTalkers } = require('../utils/utils');
 const existingId = require('../middlewares/existingId');
 const tokenValidation = require('../middlewares/tokenValidation');
 const nameValidation = require('../middlewares/nameValidation');
@@ -13,7 +13,7 @@ const router = express.Router();
 
 router.get('/', async (_req, resp, next) => {
   try {
-    const talkers = await readTalker();
+    const talkers = await getAllTalkers();
     resp.status(HTTP_OK_STATUS).json(talkers);
   } catch (error) {
     return next(error);
@@ -22,8 +22,7 @@ router.get('/', async (_req, resp, next) => {
 
 router.get('/:id', existingId, async (req, resp, next) => {
   try {
-    const talkers = await readTalker();
-    const talker = talkers.find(({ id }) => id === Number(req.params.id));
+    const talker = await getTalkerById(req.params.id);
     resp.status(HTTP_OK_STATUS).json(talker);
   } catch (error) {
     return next(error);
@@ -42,9 +41,25 @@ router.post('/', tokenValidation, nameValidation,
   }
 });
 
-router.put('/:id', (req, resp, next) => {
+router.put('/:id', existingId, tokenValidation, 
+  nameValidation, ageValidation, talkValidation,
+  watchedValidation, rateValidation, async (req, resp, next) => {
+  try {
   const { id } = req.params;
-  getTalkerID(id);
+
+  const { body } = req;
+  const talkers = await getAllTalkers();
+
+  const index = talkers.findIndex((talker) => talker.id === Number(id));
+
+  talkers[index] = { id: Number(id), ...body };
+
+  await writeTalkers(talkers);
+
+  resp.status(HTTP_OK_STATUS).json(talkers[index]);
+  } catch (error) {
+    return next(error);
+  }
 });
 
 module.exports = router;

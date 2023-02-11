@@ -5,7 +5,7 @@ const { HTTP_BAD_REQUEST } = require('./constStatus');
 const talkerPath = path.resolve(__dirname, '../talker.json');
 let nextId = 5;
 
-const readTalker = async () => {
+const getAllTalkers = async () => {
   try {
     const data = await fs.readFile(talkerPath, 'utf-8');
     return JSON.parse(data);
@@ -14,14 +14,10 @@ const readTalker = async () => {
   }
 };
 
-const getTalkerID = async (id) => {
-   try {
-  const talkers = await readTalker();
+const getTalkerById = async (id) => {
+  const talkers = await getAllTalkers();
   const talker = talkers.find((t) => t.id === Number(id));
   return talker;
-  } catch (error) {
-    console.error(`Arquivo não pôde ser lido: ${error}`);
-  }
 };
 
 const isRequered = (fieldValue, next, value) => {
@@ -33,7 +29,7 @@ const isRequered = (fieldValue, next, value) => {
   }
 };
 
-const writeTalker = async (data) => {
+const writeTalkers = async (data) => {
   try {
     await fs.writeFile(talkerPath, JSON.stringify(data));
   } catch (error) {
@@ -42,15 +38,15 @@ const writeTalker = async (data) => {
 };
 
 const addTalker = async (data) => {
-  const allTalkers = await readTalker();
+  const allTalkers = await getAllTalkers();
   const newTalker = {
     id: nextId,
     ...data,
   };
   nextId += 1;
   allTalkers.push(newTalker);
-  await writeTalker(allTalkers);
+  await writeTalkers(allTalkers);
   return newTalker;
 };
 
-module.exports = { readTalker, isRequered, writeTalker, addTalker, getTalkerID };
+module.exports = { getAllTalkers, isRequered, writeTalkers, addTalker, getTalkerById };
