@@ -7,7 +7,7 @@ const ageValidation = require('../middlewares/ageValidation');
 const talkValidation = require('../middlewares/talkValidation');
 const watchedValidation = require('../middlewares/watchedValidation');
 const rateValidation = require('../middlewares/rateValidation');
-const { HTTP_OK_STATUS, HTTP_CREATED } = require('../utils/constStatus');
+const { HTTP_OK_STATUS, HTTP_CREATED, HTTP_NO_CONTENT } = require('../utils/constStatus');
 
 const router = express.Router();
 
@@ -46,14 +46,11 @@ router.put('/:id', existingId, tokenValidation,
   watchedValidation, rateValidation, async (req, resp, next) => {
   try {
   const { id } = req.params;
-
-  const { body } = req;
+  const updateTalker = req.body;
   const talkers = await getAllTalkers();
 
   const index = talkers.findIndex((talker) => talker.id === Number(id));
-
-  talkers[index] = { id: Number(id), ...body };
-
+  talkers[index] = { id: Number(id), ...updateTalker };
   await writeTalkers(talkers);
 
   resp.status(HTTP_OK_STATUS).json(talkers[index]);
@@ -61,5 +58,20 @@ router.put('/:id', existingId, tokenValidation,
     return next(error);
   }
 });
+
+router.delete('/:id', existingId, tokenValidation, 
+  async (req, resp, next) => {
+  try {
+    const { id } = req.params;
+     const talkers = await getAllTalkers();
+
+    const removeTalker = talkers.filter((talker) => talker.id !== Number(id));
+    await writeTalkers(removeTalker);
+
+    resp.status(HTTP_NO_CONTENT).end();
+    } catch (error) {
+    return next(error);
+    }
+  });
 
 module.exports = router;
