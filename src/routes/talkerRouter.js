@@ -25,7 +25,6 @@ router.get('/search', tokenValidation, async (req, resp, next) => {
     const { q } = req.query;
     const talkers = await await getAllTalkers();
     const filteredTalkers = talkers.filter((talker) => talker.name.includes(q));
-    console.log(resp);
     return resp.status(HTTP_OK_STATUS).json(filteredTalkers);
   } catch (error) {
     return next(error);
